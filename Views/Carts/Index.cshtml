@@ -1,0 +1,89 @@
+﻿@model TradeApp.Models.Cart.DetailVM
+@{ 
+    int i = 0;
+}
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Cart</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                S.N.
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CartProducts.First().product.ProductName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.CartProducts.First().product.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CartProducts.First().quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CartProducts.First().TotalPrice)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+@foreach (var item in Model.CartProducts) {
+        <tr>
+            <td>
+                @{
+                    i=i+1;
+                    Html.DisplayText(i.ToString());
+                 }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.product.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.product.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                <a asp-action="RemoveProduct" asp-route-productid="@item.product.Code">Remove</a>|
+                <a asp-action="AddProduct" asp-route-productid="@item.product.Code">Increase</a>|
+                <a asp-action="ReduceProduct" asp-route-productid="@item.product.Code">Decrease</a>|
+                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.product.Code">View</a>|
+            </td>
+        </tr>        
+}
+    </tbody>
+    <tbody>
+        <tr>
+            <td>
+                <strong> @Html.DisplayNameFor(model => model.GrandTotalPrice)</strong>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+                <strong>
+                    @Html.DisplayFor(model => model.GrandTotalPrice)
+                </strong>
+            </td>
+
+        </tr>
+    </tbody>    
+</table>
+<div>   
+    |<a asp-controller="Products" asp-action="Index">Buy More</a>|
+    |<a asp-controller="Orders" asp-action="OrderCart">Proceed To Order</a>|
+</div>

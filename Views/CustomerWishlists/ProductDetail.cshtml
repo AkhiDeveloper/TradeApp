@@ -1,0 +1,51 @@
+﻿@model TradeApp.Data.CustomerWishlist
+
+@{
+    ViewData["Title"] = "ProductDetail";
+}
+
+<h1>DeleteProduct</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.products.First().ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.products.First().BrandName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.products.First().MRP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.products.First().Discount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.products) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BrandName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MRP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discount)
+            </td>
+            <td> |
+                <a asp-action="DeleteProduct" asp-route-id="@Model.Code"asp-route-productid="@item.Code">Remove from Wishlist</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
