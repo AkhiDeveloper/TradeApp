@@ -1,4 +1,7 @@
-﻿@model TradeApp.Data.Order
+﻿@using Microsoft.AspNetCore.Identity
+@model TradeApp.Models.Order.DetailVM
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
 
 @{
     ViewData["Title"] = "Details";
@@ -10,21 +13,88 @@
     <h4>Order</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PlacedDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PlacedDate)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsConfirmed)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsConfirmed)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProductCharge)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProductCharge)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Code">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<table class="table">
+    Ordered Products
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.orderproducts.First().product.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orderproducts.First().product.BrandName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orderproducts.First().product.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orderproducts.First().quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orderproducts.First().TotalPrice)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.orderproducts)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.BrandName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+
+            </tr>
+        }
+        <tr></tr>
+    </tbody>
+</table>
+@{ var appuser = await _userManager.GetUserAsync(User);}
+@if (await _userManager.IsInRoleAsync(appuser, "Customer"))
+{
+<td>
+    <a asp-action="Index" >Back to List</a> |
+    <a asp-controller="Products" asp-route-id="@Model.Code">New Order</a> |
+    <a asp-action="Delete" asp-route-id="@Model.Code">Cancel</a>
+</td>
+}
+else if (await _userManager.IsInRoleAsync(appuser, "Admin"))
+{
+<td>
+    <a asp-action="Index" >Back to List</a> |
+    <a asp-action="ConfirmOrder" asp-route-id="@Model.Code">Confirm</a>|
+    <a asp-action="DeliveredOrder" asp-route-id="@Model.Code">Make Delivered</a>|
+</td>
+}

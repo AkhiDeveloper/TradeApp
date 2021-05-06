@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TradeApp.Data;
 
-namespace TradeApp.Data.Migrations
+namespace TradeApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210331104502_UserTable2")]
-    partial class UserTable2
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,10 +270,12 @@ namespace TradeApp.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("customerId")
+                    b.Property<string>("customerid")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("productCode")
+                    b.Property<string>("productcode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("productrating")
@@ -283,9 +283,9 @@ namespace TradeApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("customerId");
+                    b.HasIndex("customerid");
 
-                    b.HasIndex("productCode");
+                    b.HasIndex("productcode");
 
                     b.ToTable("CustomerProductRatings");
                 });
@@ -313,15 +313,20 @@ namespace TradeApp.Data.Migrations
             modelBuilder.Entity("TradeApp.Data.Order", b =>
                 {
                     b.Property<string>("Code")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelivered")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("PlacedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("customerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Code");
@@ -363,6 +368,9 @@ namespace TradeApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("BrandName")
                         .HasColumnType("nvarchar(max)");
 
@@ -390,10 +398,10 @@ namespace TradeApp.Data.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("FName")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LName")
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("User");
@@ -494,11 +502,15 @@ namespace TradeApp.Data.Migrations
                 {
                     b.HasOne("TradeApp.Data.Customer", "customer")
                         .WithMany()
-                        .HasForeignKey("customerId");
+                        .HasForeignKey("customerid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TradeApp.Data.Product", "product")
                         .WithMany()
-                        .HasForeignKey("productCode");
+                        .HasForeignKey("productcode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("customer");
 
@@ -518,7 +530,9 @@ namespace TradeApp.Data.Migrations
                 {
                     b.HasOne("TradeApp.Data.Customer", "customer")
                         .WithMany()
-                        .HasForeignKey("customerId");
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("customer");
                 });

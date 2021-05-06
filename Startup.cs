@@ -27,6 +27,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using TradeApp.Mappings;
+using TradeApp.CustomAuthorizations;
 
 namespace TradeApp
 {
@@ -59,6 +60,17 @@ namespace TradeApp
             services.Configure<ICollection<string>>(Configuration
                 .GetSection("NativeRoles"));
 
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("CustomerOrderedProduct", policy =>
+                {
+                    policy.RequireRole("Customer");
+                    policy.Requirements.Add(new CustomerUsedProductRequriements());
+                });
+            });
+
+            services.AddScoped<IAuthorizationHandler, CustomerUsedProductHandler>();
+
             //services.Configure<JwtBearerTokenSetting>(Configuration
             //    .GetSection("JwtBearerTokenSetting"));
 
@@ -88,8 +100,8 @@ namespace TradeApp
 
             services.AddControllersWithViews();
 
-            
-            
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

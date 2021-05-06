@@ -122,6 +122,124 @@ namespace TradeApp.Controllers
             
         }
 
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> ReduceProduct
+            (string productId, int quantity = 1)
+        {
+            try
+            {
+                //getting user Detail from https
+                var appuser = await _userManager.GetUserAsync(User);
+
+                //Checking cart existence
+                if (CartsExists(appuser.Id) == false)
+                {
+                    CreateCart(appuser.Id);
+                }
+
+                //Finding Cart & product
+                var cartdata = _context.Carts
+                        .Include(x => x.cartProducts)
+                        .ThenInclude(x => x.product)
+                        .Single(x => x.CustomerId == appuser.Id);
+                var productdata = await _context.Product.FindAsync(productId);
+
+                //Checking product
+                if (productdata == null)
+                {
+                    return Redirect("Products/Index");
+                }
+
+                //Checking cartproduct
+                if (!cartdata.cartProducts.Any
+                    (x => x.product.Code == productId))
+                {
+                    var newcartproductdata = new CartProduct()
+                    {
+                        Cart = cartdata,
+                        AddedDate = DateTime.Now,
+                        product = productdata,
+                        quantity = 0
+
+                    };
+                    _context.CartProducts.Add(newcartproductdata);
+                    await _context.SaveChangesAsync();
+                }
+
+                var cartproductdata = cartdata.cartProducts.Single
+                    (x => x.product.Code == productId);
+
+                //Subracting Quantity
+                cartproductdata.quantity = cartproductdata.quantity - quantity;
+
+                ProductQuantityCheck(cartproductdata);
+
+                //Saving Data
+                await _context.SaveChangesAsync();
+
+                //Returning view to index page
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        }
+
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> RemoveProduct
+            (string productId)
+        {
+            try
+            {
+                //getting user Detail from https
+                var appuser = await _userManager.GetUserAsync(User);
+
+                //Checking cart existence
+                if (CartsExists(appuser.Id) == false)
+                {
+                    CreateCart(appuser.Id);
+                }
+
+                //Finding Cart & product
+                var cartdata = _context.Carts
+                        .Include(x => x.cartProducts)
+                        .ThenInclude(x => x.product)
+                        .Single(x => x.CustomerId == appuser.Id);
+                var productdata = await _context.Product.FindAsync(productId);
+
+                //Checking product
+                if (productdata == null)
+                {
+                    return Redirect("Products/Index");
+                }
+
+                //Checking cartproduct
+                if (!cartdata.cartProducts.Any
+                    (x => x.product.Code == productId))
+                {
+                    return View(nameof(Index));
+                }
+
+                var cartproductdata = cartdata.cartProducts.Single
+                    (x => x.product.Code == productId);
+
+                //Removing Product
+                _context.CartProducts.Remove(cartproductdata);
+
+                //Saving Data
+                await _context.SaveChangesAsync();
+
+                //Returning view to index page
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        }
 
         private bool CartsExists(string customerid)
         {
@@ -135,6 +253,15 @@ namespace TradeApp.Controllers
                 CustomerId = customerid
             }) ;
             _context.SaveChanges();
+        }
+
+        private void ProductQuantityCheck(CartProduct cartProduct)
+        {
+            if(cartProduct.quantity <= 0)
+            {
+                _context.CartProducts.Remove(cartProduct);
+                _context.SaveChanges();
+            }
         }
     }
 }

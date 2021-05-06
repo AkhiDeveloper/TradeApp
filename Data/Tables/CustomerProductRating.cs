@@ -28,10 +28,16 @@ namespace TradeApp.Data
         [DefaultValue(0)]
         public Rating productrating { get; set; }
 
+        [Required]
+        [ForeignKey(nameof(customer))]
+        public string customerid { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(product))]
+        public string productcode { get; set; }
+
         //Navigation Property
-        [Required]
         public Customer customer { get; set; }
-        [Required]
         public Product product { get; set; }
     }
 }

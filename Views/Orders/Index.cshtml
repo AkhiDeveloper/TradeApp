@@ -1,14 +1,27 @@
-﻿@model IEnumerable<TradeApp.Data.Order>
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<TradeApp.Models.Order.DetailVM>
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
+@{ var appuser = await _userManager.GetUserAsync(User);}
+@if (await _userManager.IsInRoleAsync(appuser, "Admin"))
+{
+    <p>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    </p>
+}
+else
+{
+    <p>
+        <a asp-controller="Products">New Order</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -16,26 +29,46 @@
                 @Html.DisplayNameFor(model => model.PlacedDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsConfirmed)
+                @Html.DisplayNameFor(model => model.ProductCharge)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlacedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsConfirmed)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Code">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Code">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Code">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlacedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductCharge)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                
+                @if (await _userManager.IsInRoleAsync(appuser, "Customer"))
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Code">View</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Code">Cancel</a>
+                    </td>
+                }
+                else if (await _userManager.IsInRoleAsync(appuser, "Admin"))
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Code">View</a> |
+                        <a asp-action="ConfirmOrder" asp-route-id="@item.Code">Confirm</a>|
+                        <a asp-action="DeliveredOrder" asp-route-id="@item.Code">Make Delivered</a>|
+                    </td>
+                }
+
+            </tr>
+        }
+        <tr></tr>
     </tbody>
 </table>

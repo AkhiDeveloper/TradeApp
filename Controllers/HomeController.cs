@@ -20,7 +20,7 @@ namespace TradeApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Redirect("/Identity/GeneralDashBoard");
         }
 
         public IActionResult Privacy()

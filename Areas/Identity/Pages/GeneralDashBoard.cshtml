@@ -1,0 +1,59 @@
+﻿@page
+@model TradeApp.Areas.Identity.Pages.GeneralDashBoardModel
+@{
+    ViewData["Title"] = "DashBoard";
+}
+
+<h1>DashBoard</h1>
+
+<div><b>Products</b><br /></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.productDetails.FirstOrDefault().ProductName)</th>
+            <th>@Html.DisplayNameFor(model => model.productDetails.FirstOrDefault().BrandName)</th>
+            <th>@Html.DisplayNameFor(model => model.productDetails.FirstOrDefault().Price)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.productDetails)
+        {
+            <tr>
+                <td>@product.ProductName</td>
+                <td>@product.BrandName</td>
+                <td>@product.Price.ToString()</td>
+            </tr>
+
+        }
+    </tbody>   
+</table>
+
+<th></th>
+
+<div><b>Your Orders</b><br /></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.orderDetails.FirstOrDefault().PlacedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.orderDetails.FirstOrDefault().Status)</th>
+            <th>@Html.DisplayNameFor(model => model.orderDetails.FirstOrDefault().ProductCharge)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.orderDetails)
+        {
+            <tr>
+                <td>@order.PlacedDate</td>
+                <td>@order.Status</td>
+                <td>@order.ProductCharge.ToString()</td>
+            </tr>
+        }
+    </tbody>
+    
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

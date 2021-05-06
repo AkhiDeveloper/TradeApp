@@ -1,0 +1,71 @@
+﻿@model TradeApp.ViewModel.Product.CustomerProductRatingCreate
+
+
+@{
+    ViewData["Title"] = "RateProduct";
+}
+
+<h1>RateProduct</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.product.ProductName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.product.ProductName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.product.BrandName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.product.BrandName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.product.MRP)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.product.MRP)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.product.Discount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.product.Discount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.product.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.product.Price)
+        </dd>
+    </dl>
+</div>
+
+<h4>CustomerProductRating</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Product" asp-action="RateProduct">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="productrating" class="control-label"></label>
+                <select asp-for="@Model.productrating" asp-items="Html.GetEnumSelectList<TradeApp.Data.Rating>()"></select>
+                    <span asp-validation-for="productrating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -31,7 +31,7 @@ namespace TradeApp.Controllers
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
-           
+
         }
 
         // GET: Products
@@ -40,14 +40,14 @@ namespace TradeApp.Controllers
         {
             var productdata = _context.Product;
             string adminrole = "Admin";
-            var appuser = _userManager.GetUserAsync(User).Result; 
-            if(_signInManager.IsSignedIn(User) && 
-                _userManager.IsInRoleAsync(appuser,adminrole).Result)
+            var appuser = _userManager.GetUserAsync(User).Result;
+            if (_signInManager.IsSignedIn(User) &&
+                _userManager.IsInRoleAsync(appuser, adminrole).Result)
             {
                 var productdetailsmodel = _mapper.Map
-                    <List<Product>, 
+                    <List<Product>,
                     List<Models.Product.Admin.DetailVM>>(await productdata.ToListAsync());
-                return View("AdminIndex",productdetailsmodel);
+                return View("AdminIndex", productdetailsmodel);
             }
 
             var productsmodel = _mapper.Map<List<DetailVM>>(await productdata.ToListAsync());
@@ -94,7 +94,7 @@ namespace TradeApp.Controllers
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("Code,ProductName,BrandName,MRP,Discount")] 
+            ([Bind("Code,ProductName,BrandName,MRP,Discount")]
               AdminProductModel.CreateVM productmodel)
         {
             var productdata = _mapper.Map<Product>(productmodel);
@@ -133,7 +133,7 @@ namespace TradeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("ProductName,BrandName,MRP,Discount")] AdminProductModel.UpdateVM producmodel)
         {
-            
+
             if (ModelState.IsValid)
             {
                 var productdata = _context.Product.FindAsync(id).Result;
@@ -190,6 +190,72 @@ namespace TradeApp.Controllers
             _context.Product.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Policy = "CustomerOrderedProduct")]
+        public async Task<IActionResult> RateProduct
+            (string id)
+        {
+            try
+            {
+                //Getting Userdata
+                var appuser = await _userManager.GetUserAsync(User);
+
+                //Checking Customer Product Rating in database
+                if (!_context.CustomerProductRatings.Any(x => x.productcode == id))
+                {
+                    //Creating Customer Product Rating
+                    var productratingmodel = new CustomerProductRating()
+                    {
+                                productcode = id,
+                                customerid = appuser.Id
+                    };
+                            await _context.AddAsync(productratingmodel);
+                            await _context.SaveChangesAsync();
+                }
+                var productratingview = _mapper.Map<ViewModel.Product.CustomerProductRatingCreate>
+                    (await _context.CustomerProductRatings.SingleAsync(x=>x.productcode==id));
+                
+                //Redirect to View to Enter rating
+                return View(productratingview);
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Controllers.HomeController.Index),
+                   "Home");
+            }
+
+
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "CustomerOrderedProduct")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RateProduct( 
+            [Bind("id,productrating")] ViewModel.Product.CustomerProductRatingCreate customerProductRatingupdate)
+        {
+            try
+            {
+                //Getting Userdata
+                var appuser = await _userManager.GetUserAsync(User);
+
+                //Finding Customer Product Rating
+                var customerProductRating = await _context.CustomerProductRatings
+                    .Include(x => x.customer)
+                    .SingleAsync(x => x.customer.Id == appuser.Id);
+
+                _mapper.Map(customerProductRatingupdate, customerProductRating);
+
+                _context.Update(customerProductRating);
+                await _context.SaveChangesAsync();
+
+                return Redirect("Orders");
+            }
+            catch
+            {
+                return RedirectToAction(nameof(RateProduct), customerProductRatingupdate.Id);
+            }
+            
         }
 
         private bool ProductExists(string id)

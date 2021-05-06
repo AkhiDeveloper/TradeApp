@@ -16,9 +16,17 @@ namespace TradeApp.Mappings
             CreateMap<Product, Models.Product.Admin.DetailVM>().ReverseMap();
             CreateMap<Product, Models.Product.Admin.UpdateVM>().ReverseMap();
             CreateMap<Product, Models.Product.DetailVM>().ReverseMap();
+            CreateMap<CustomerProductRating, ViewModel.Product.CustomerProductRatingCreate>();
 
             CreateMap<Cart, Models.Cart.DetailVM>().ReverseMap();
             CreateMap<CartProduct, Models.Cart.CartProductVM>().ReverseMap();
+
+            CreateMap<Order, Models.Order.DetailVM>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom<CustomResolver>());
+            CreateMap<OrderProduct, Models.Order.OrderProductVM>()
+                .ReverseMap();
+
+            CreateMap<OrderProduct, CartProduct>().ReverseMap();
            
         }
     }
