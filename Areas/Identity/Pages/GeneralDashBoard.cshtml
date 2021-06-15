@@ -16,17 +16,32 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var product in Model.productDetails)
-        {
-            <tr>
-                <td>@product.ProductName</td>
-                <td>@product.BrandName</td>
-                <td>@product.Price.ToString()</td>
-            </tr>
+	<tbody>
+		@try
+		{
+			@foreach (var product in Model.productDetails)
+			{
+		<tr>
+			<td>@product.ProductName</td>
+			<td>@product.BrandName</td>
+			<td>@product.Price.ToString()</td>
+			<td>
+				<a asp-action="Details" asp-route-id="@product.Code">View</a> |
+				<a asp-action="RateProduct" asp-route-id="@product.Code">Rate</a> |
 
-        }
-    </tbody>   
+			</td>
+		</tr>
+
+			}
+		}
+            catch
+            {
+                <tr>
+                    <td></td>
+                </tr>
+            }
+
+	</tbody>   
 </table>
 
 <th></th>
@@ -41,16 +56,25 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var order in Model.orderDetails)
-        {
-            <tr>
-                <td>@order.PlacedDate</td>
-                <td>@order.Status</td>
-                <td>@order.ProductCharge.ToString()</td>
-            </tr>
-        }
-    </tbody>
+	<tbody>
+		@try
+		{
+			@foreach (var order in Model.orderDetails)
+			{
+				<tr>
+					<td>@order.PlacedDate</td>
+					<td>@order.Status</td>
+					<td>@order.ProductCharge.ToString()</td>
+				</tr>
+			}
+		}
+		catch { 
+			<tr>
+				<td></td>
+			</tr>
+		}
+
+	</tbody>
     
 </table>
 

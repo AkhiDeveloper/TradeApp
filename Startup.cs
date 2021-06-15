@@ -108,7 +108,8 @@ namespace TradeApp
         public void Configure(IApplicationBuilder app, 
             IWebHostEnvironment env,
             UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -126,7 +127,9 @@ namespace TradeApp
 
             app.UseRouting();
 
-            Seeder.Seed(userManager, roleManager);
+            Seeder.Seed(userManager, 
+                roleManager,
+                dbContext);
 
             app.UseAuthentication();
             app.UseAuthorization();

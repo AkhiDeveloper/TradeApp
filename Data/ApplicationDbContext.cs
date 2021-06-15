@@ -23,5 +23,15 @@ namespace TradeApp.Data
         public DbSet<CustomerWishlist> CustomerWishlists { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Product>(
+                b =>
+                {
+                    b.HasIndex(e => new { e.ProductName, e.BrandName }).IsUnique();
+                });
+            base.OnModelCreating(builder);
+        }
     }
 }

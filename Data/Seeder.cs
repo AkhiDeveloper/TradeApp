@@ -10,10 +10,12 @@ namespace TradeApp.Data
     public static class Seeder
     {
         public static void Seed(UserManager<IdentityUser> _userManager,
-            RoleManager<IdentityRole> _roleManager)
+            RoleManager<IdentityRole> _roleManager,
+            Data.ApplicationDbContext _dbContext)
         {
             SeedRoles(_roleManager);
             SeedUsers(_userManager);
+            SeedProducts(_dbContext);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> _roleManager)
@@ -83,6 +85,40 @@ namespace TradeApp.Data
                     _userManager.AddToRoleAsync(user, userinfo.Role.Normalize()).Wait();
                 }
             }
+        }
+
+        private static void SeedProducts(Data.ApplicationDbContext dbcontext)
+        {
+            
+            ICollection<Data.Product> _defaultproducts = new List<Data.Product>()
+            {
+                new Product()
+            {
+                ProductName="Wai Wai",
+                BrandName="C.G.",
+                MRP=25,
+            },
+
+                new Product()
+            {
+                    ProductName="Dhara Mustard Oil 1L",
+                    BrandName="Dhara",
+                    MRP=280,
+            }
+            };
+            
+            dbcontext.Product.AddRange(_defaultproducts);
+            try
+            {
+                dbcontext.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                return;
+            }
+         
+            
         }
     }
 }

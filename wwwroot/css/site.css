@@ -1,71 +1,144 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
+﻿* {
+    color: aliceblue;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    background-image: url('../img/ims-3.jpg');
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    width: 100%;
+    height: 605px;
 }
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+
+.pb-3 {
+    margin-top: 65px;
+}
+
+.headerset {
+    box-sizing: border-box;
+}
+
+.headersetindex {
+    /*padding-top: 245px;*/
+    box-sizing: border-box;
+}
+
+    .headersetindex h2 {
+        font-size: 45px;
+        font-family: forte;
+    }
+
+.headerset h2 {
+    font-size: 45px;
+    font-family: forte;
+}
+
+.headerset h1 {
+    font-size: 75px;
+    font-weight: bold;
+}
+
+
+.rowsetting {
+    margin: 80px 0px;
+}
+
+    .rowsetting p {
+        padding: 13px;
+        color: #6c757d;
+    }
+
+    .rowsetting h2 {
+        margin-top: 100px;
+        font-weight: bold;
+        font-size: 30px;
+    }
+
+.imgsetting {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+}
+
+.fa-shopping-cart {
+    margin: 23px;
+}
+
+.fa-desktop {
+    margin: 27px;
+}
+
+.fa-lock {
+    margin: 23px;
+}
+
+/*RESponsive*/
+@media (min-width: 992px) {
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+@media (min-width: 575px) and (max-width: 767px) {
+}
+
+@media (min-width: 460px) and (max-width: 574px) {
+}
+
+@media (max-width: 479px ) {
+    .headerset h2 {
+        font-size: 22px;
+        font-family: forte;
+    }
+
+    .headerset h1 {
+        font-size: 35px;
+        font-weight: bold;
+    }
+}
+
+.login {
+    position: absolute;
+    width: 300px;
+    height: 600px;
+    margin-top: 80px;
+    margin-left: 400px;
+}
+
+    .login h2 {
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0,0,0,0.3);
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+.loginInput {
+    width: 300px;
+    margin-bottom: 10px;
+    background: rgba(0,0,0,0.3);
+    border: none;
+    outline: none;
+    padding: 10px;
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 4px;
+    box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #193099;
+    text-align: center;
+    padding: 2px;
+}
+
+tr:nth-child(even) {
+    background-color: #0C1955;
 }

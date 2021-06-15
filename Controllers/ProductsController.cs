@@ -192,7 +192,7 @@ namespace TradeApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Policy = "CustomerOrderedProduct")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> RateProduct
             (string id)
         {
@@ -224,15 +224,12 @@ namespace TradeApp.Controllers
                 return RedirectToAction(nameof(Controllers.HomeController.Index),
                    "Home");
             }
-
-
         }
 
         [HttpPost]
-        [Authorize(Policy = "CustomerOrderedProduct")]
+        [Authorize(Roles = "Customer")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RateProduct( 
-            [Bind("id,productrating")] ViewModel.Product.CustomerProductRatingCreate customerProductRatingupdate)
+        public async Task<IActionResult> RateProduct(ViewModel.Product.CustomerProductRatingCreate customerProductRatingupdate)
         {
             try
             {
