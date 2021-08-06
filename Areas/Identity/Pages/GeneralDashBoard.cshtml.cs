@@ -39,17 +39,6 @@ namespace TradeApp.Areas.Identity.Pages
 
                 var products = _dbContext.Product.ToList();
 
-                Microsoft.Scripting.Hosting.ScriptEngine pythonEngine = IronPython.Hosting.Python.CreateEngine();
-                Microsoft.Scripting.Hosting.ScriptSource pythonScript = pythonEngine.CreateScriptSourceFromFile("C:\\Users\\Alok Mishra\\source\repos\\AkhiDeveloper\\TradeApp\\Python\\recommends.py");
-
-                Microsoft.Scripting.Hosting.ScriptScope scope = pythonEngine.CreateScope();
-                scope.SetVariable("u_id", appuser.Id);
-
-                pythonScript.Execute(scope);
-
-                System.Console.Out.WriteLine("output: " + scope.GetVariable("output"));
-                var output = scope.GetVariable("output"); // 
-
                 productDetails = _mapper.Map<IList<Models.Product.DetailVM>>(products);
 
                 var userorders = _dbContext.Orders
@@ -64,9 +53,42 @@ namespace TradeApp.Areas.Identity.Pages
             }
             catch
             {
-                return Page();  
+                return Page();
             }
-            
+            //try
+            //{
+            //    var appuser = await _userManager.GetUserAsync(User);
+            //
+            //    var products = _dbContext.Product.ToList();
+            //
+            //    Microsoft.Scripting.Hosting.ScriptEngine pythonEngine = IronPython.Hosting.Python.CreateEngine();
+            //    Microsoft.Scripting.Hosting.ScriptSource pythonScript = pythonEngine.CreateScriptSourceFromFile("C:\\Users\\Alok Mishra\\source\repos\\AkhiDeveloper\\TradeApp\\Python\\recommends.py");
+            //
+            //    Microsoft.Scripting.Hosting.ScriptScope scope = pythonEngine.CreateScope();
+            //    scope.SetVariable("u_id", appuser.Id);
+            //
+            //    pythonScript.Execute(scope);
+            //
+            //    System.Console.Out.WriteLine("output: " + scope.GetVariable("output"));
+            //    var output = scope.GetVariable("output"); // 
+            //
+            //    productDetails = _mapper.Map<IList<Models.Product.DetailVM>>(products);
+            //
+            //    var userorders = _dbContext.Orders
+            //        .Where(x => x.customerId == appuser.Id)
+            //        .ToList();
+            //
+            //    orderDetails = _mapper.Map<IList<Models.Order.DetailVM>>(userorders);
+            //
+            //
+            //
+            //    return Page();
+            //}
+            //catch
+            //{
+            //    return Page();  
+            //}
+
         }
     }
 }
