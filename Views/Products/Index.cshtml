@@ -10,19 +10,19 @@
     <thead>
         <tr>
             <th>
+                <span>Image</span>
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ProductName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.BrandName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MRP)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Discount)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                <span>Rating</span>
             </th>
             <th></th>
         </tr>
@@ -31,24 +31,23 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                <img src=@item.ImageUrl class="imagelist" alt="No Image">
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.ProductName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BrandName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MRP)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Discount)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AvgRating)
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Code">View</a> |
                 <a asp-action="RateProduct" asp-route-id="@item.Code">Rate</a> |
-
             </td>
         </tr>
 }

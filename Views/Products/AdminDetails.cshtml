@@ -11,10 +11,10 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
+            <span>Image</span>
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
+            <img src=@Model.ImageUrl class="imagelist" alt="No Image">
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.BrandName)

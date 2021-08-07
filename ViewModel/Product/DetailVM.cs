@@ -10,6 +10,7 @@ namespace TradeApp.Models.Product
     public class DetailVM
     {
         public string Code { get; set; }
+        public string ImageUrl {  get; set; }
         public string ProductName { get; set; }
         public string BrandName { get; set; }
         public decimal MRP { get; set; }
@@ -27,5 +28,8 @@ namespace TradeApp.Models.Product
 
         [DefaultValue(1)]
         public int Quantity { get; set; }
+
+        [DefaultValue(0)]
+        public Data.Rating AvgRating {  get; set; }
     }
 }

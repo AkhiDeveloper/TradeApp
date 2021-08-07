@@ -22,6 +22,8 @@ namespace TradeApp.Data
         [Required]
         public string ProductName { get; set; }
 
+        public string ImageUrl { get; set; }
+
         [DefaultValue("No Brand")]
         public string BrandName { get; set; }
 
@@ -36,5 +38,8 @@ namespace TradeApp.Data
         [DefaultValue(0)]
         public decimal Discount { get; set; }
         public DateTime AddedDate { get; set; }
+
+        [DefaultValue(0)]
+        public Rating AvgRating { get; set; }
     }
 }

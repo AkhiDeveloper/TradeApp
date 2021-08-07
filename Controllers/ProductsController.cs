@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using TradeApp.Data;
 using AdminProductModel = TradeApp.Models.Product.Admin;
 using TradeApp.Models.Product;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+
 
 namespace TradeApp.Controllers
 {
@@ -20,15 +23,18 @@ namespace TradeApp.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         public ProductsController
             (ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            IMapper mapper)
+            IMapper mapper,
+            IWebHostEnvironment hostEnvironment)
         {
             _context = context;
             _mapper = mapper;
+            this._hostEnvironment = hostEnvironment;
             _userManager = userManager;
             _signInManager = signInManager;
 
@@ -94,9 +100,29 @@ namespace TradeApp.Controllers
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("Code,ProductName,BrandName,MRP,Discount")]
+            ([Bind("Code,Image,ProductName,BrandName,MRP,Discount")]
               AdminProductModel.CreateVM productmodel)
         {
+            try
+            {
+                //Saving Image to Server
+                string root = _hostEnvironment.WebRootPath;
+                string filename = Path.GetFileNameWithoutExtension(productmodel.Image.FileName);
+                string ext = Path.GetExtension(productmodel.Image.FileName);
+                filename = filename + DateTime.Now.Ticks + ext;
+                string path = Path.Combine(root + "/img/", filename);
+                using (var filestream = new FileStream(path, FileMode.Create))
+                {
+                    await productmodel.Image.CopyToAsync(filestream);
+                }
+                productmodel.ImageUrl = Path.Combine("/img/", filename);
+                //
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+
             var productdata = _mapper.Map<Product>(productmodel);
             if (ModelState.IsValid)
             {
@@ -131,7 +157,7 @@ namespace TradeApp.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ProductName,BrandName,MRP,Discount")] AdminProductModel.UpdateVM producmodel)
+        public async Task<IActionResult> Edit(string id, [Bind("ProductName, Image, BrandName,MRP,Discount")] AdminProductModel.UpdateVM producmodel)
         {
 
             if (ModelState.IsValid)
@@ -139,6 +165,20 @@ namespace TradeApp.Controllers
                 var productdata = _context.Product.FindAsync(id).Result;
                 try
                 {
+                    
+
+                    //Saving Image to Server
+                    string root = _hostEnvironment.WebRootPath;
+                    string filename = Path.GetFileNameWithoutExtension(producmodel.Image.FileName);
+                    string ext = Path.GetExtension(producmodel.Image.FileName);
+                    filename = filename + DateTime.Now.Ticks + ext;
+                    string path = Path.Combine(root+"/img/", filename);
+                    using(var filestream=new FileStream(path,FileMode.Create))
+                    {
+                        await producmodel.Image.CopyToAsync(filestream);
+                    }
+                    producmodel.ImageUrl = Path.Combine("/img/",filename);
+                    //
                     _mapper.Map(producmodel, productdata);
                     _context.Update(productdata);
                     await _context.SaveChangesAsync();
@@ -229,7 +269,7 @@ namespace TradeApp.Controllers
         [HttpPost]
         [Authorize(Roles = "Customer")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RateProduct(ViewModel.Product.CustomerProductRatingCreate customerProductRatingupdate)
+        public async Task<IActionResult> RateProduct(string id,Data.Rating productrating)
         {
             try
             {
@@ -237,20 +277,36 @@ namespace TradeApp.Controllers
                 var appuser = await _userManager.GetUserAsync(User);
 
                 //Finding Customer Product Rating
-                var customerProductRating = await _context.CustomerProductRatings
-                    .Include(x => x.customer)
-                    .SingleAsync(x => x.customer.Id == appuser.Id);
+                var ProductRatings =  _context.CustomerProductRatings
+                    .Where(x => x.productcode == id);
 
-                _mapper.Map(customerProductRatingupdate, customerProductRating);
+                var customerProductRating=await ProductRatings.SingleAsync(x=>x.customerid == appuser.Id);
+
+                customerProductRating.productrating= productrating;
 
                 _context.Update(customerProductRating);
                 await _context.SaveChangesAsync();
+                //
 
-                return Redirect("Orders");
+                //Calculate Avg Rating
+                Rating avgrating = 0;
+                int sum=0;
+                foreach(var rating in ProductRatings.Where(x=>x.productrating!=Rating.No_Rating))
+                {
+                    sum += (int) rating.productrating;
+                }
+                avgrating = (Rating)(sum / ProductRatings.Count());
+                //
+
+                var product = await _context.Product.FindAsync(id);
+                product.AvgRating = avgrating;
+                _context.Update(product);
+                _context.SaveChanges();
+                return Redirect("Home");
             }
             catch
             {
-                return RedirectToAction(nameof(RateProduct), customerProductRatingupdate.Id);
+                return RedirectToAction(nameof(RateProduct), id);
             }
             
         }

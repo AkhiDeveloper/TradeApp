@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace TradeApp.Areas.Identity.Pages
 {
-    
+    [Authorize]
     public class GeneralDashBoardModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -31,6 +31,7 @@ namespace TradeApp.Areas.Identity.Pages
 
         public IList<Models.Order.DetailVM> orderDetails { get; set; }
 
+
         public async Task<IActionResult> OnGetAsync()
         {
             try
@@ -41,9 +42,19 @@ namespace TradeApp.Areas.Identity.Pages
 
                 productDetails = _mapper.Map<IList<Models.Product.DetailVM>>(products);
 
-                var userorders = _dbContext.Orders
+                object userorders;
+
+                if(await _userManager.IsInRoleAsync(appuser, "Admin"))
+                {
+                     userorders = _dbContext.Orders.ToList();
+                }
+                else
+                {
+                     userorders = _dbContext.Orders
                     .Where(x => x.customerId == appuser.Id)
                     .ToList();
+                }
+                
 
                 orderDetails = _mapper.Map<IList<Models.Order.DetailVM>>(userorders);
 

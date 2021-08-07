@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -13,6 +14,12 @@ namespace TradeApp.Models.Product.Admin
 
         [Required]
         public string ProductName { get; set; }
+
+        public string ImageUrl { get; set; }
+
+        [NotMapped]
+        [Display(Name ="Product Image")]
+        public IFormFile Image { get; set; }
 
         [DefaultValue("No Brand")]
         public string BrandName { get; set; }

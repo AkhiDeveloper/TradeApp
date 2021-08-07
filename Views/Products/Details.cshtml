@@ -10,6 +10,12 @@
     <h4>Product</h4>
     <hr />
     <dl class="row">
+        <dt>
+            <span>Image</span>
+        </dt>
+        <dd class="col-sm-10">
+            <img src=@Model.ImageUrl class="imagelist" alt="No Image">
+        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProductName)
         </dt>
@@ -39,6 +45,12 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AvgRating)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AvgRating)
         </dd>
     </dl>
     <label asp-for="Quantity"></label>

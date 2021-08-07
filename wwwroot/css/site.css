@@ -142,3 +142,8 @@ td, th {
 tr:nth-child(even) {
     background-color: #0C1955;
 }
+
+.imagelist{
+    height: 100px;
+    width: 100px;
+}
